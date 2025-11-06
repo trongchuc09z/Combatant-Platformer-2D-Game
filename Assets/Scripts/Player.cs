@@ -15,7 +15,6 @@ public class Player : Entity
     public Player_BasicAttackState basicAttackState { get; private set; }
     public Player_JumpAttackState jumpAttackState { get; private set; }
 
-
     [Header("Attack details")]
     public Vector2[] attackVelocity;
     public Vector2 jumpAttackVelocity;
@@ -29,7 +28,6 @@ public class Player : Entity
     public float moveSpeed;
     public float jumpForce = 5;
     public Vector2 wallJumpForce;
-
     [Range(0, 1)]
     public float inAirMoveMultiplier = .7f; // Should be from 0 to 1;
     [Range(0, 1)]
@@ -37,7 +35,6 @@ public class Player : Entity
     [Space]
     public float dashDuration = .25f;
     public float dashSpeed = 20;
-
     public Vector2 moveInput { get; private set; }
 
     protected override void Awake()
@@ -45,6 +42,8 @@ public class Player : Entity
         base.Awake();
 
         input = new PlayerInputSet();
+
+
         idleState = new Player_IdleState(this, stateMachine, "idle");
         moveState = new Player_MoveState(this, stateMachine, "move");
         jumpState = new Player_JumpState(this, stateMachine, "jumpFall");
@@ -62,20 +61,6 @@ public class Player : Entity
         stateMachine.Initialize(idleState);
     }
 
-    private void OnEnable()
-    {
-        input.Enable();
-
-        input.Player.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        input.Player.Movement.canceled += ctx => moveInput = Vector2.zero;
-    }
-
-    private void OnDisable()
-    {
-        input.Disable();
-    }
-
-
     public void EnterAttackStateWithDelay()
     {
         if (queuedAttackCo != null)
@@ -90,4 +75,16 @@ public class Player : Entity
         stateMachine.ChangeState(basicAttackState);
     }
 
+    private void OnEnable()
+    {
+        input.Enable();
+
+        input.Player.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        input.Player.Movement.canceled += ctx => moveInput = Vector2.zero;
+    }
+
+    private void OnDisable()
+    {
+        input.Disable();
+    }
 }
